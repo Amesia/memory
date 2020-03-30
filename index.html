@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <header>
+
+      <div class="logo">MEMORY ONLINE</div>
+      <div class="options">
+        <div class="select-group">
+          <label for="game-collection">Collection:</label>
+          <select id="game-collection">
+            <option value="cat">Cats</option>
+            <option value="car">Cars</option>
+            <option value="flower">Flowers</option>
+
+          </select>
+        </div>
+
+        <div class="select-group">
+          <label for="game-size">Size</label>
+          <select id="game-size">
+            <option value="6">6</option> <!-- grid 2 by 3-->
+            <option value="12">12</option> <!-- grid 4 by 3-->
+            <option value="24">24</option> <!-- grid 7 by 4-->
+            <option value="32">32</option> <!-- grid 9 by 4-->
+            <option value="40">40</option> <!-- grid 11 by 4-->
+
+          </select>
+        </div>
+
+        <button class="start-btn">Play</button>
+      </div>
+
+    </header>
+  </div>
+  <div class="game-board-background">
+    <div class="game-board-container"><span class="start-text">Press play to start</span>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-text container"><em>Made by SonjaR © 2020</em></div>
+  </footer>
+  <script src="index.js"></script>
+</body>
+
+</html>
