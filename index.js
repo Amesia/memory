@@ -91,19 +91,7 @@ function flipCard() {
   this.lastChild.classList.remove("hidden");
   this.classList.add("flipped");
   if (document.querySelectorAll(".flipped").length === 2) {
-    // remove event
-    document.querySelectorAll(".card").forEach(card => {
-      card.removeEventListener("click", flipCard);
-      card.addEventListener("click", cantTurnCard);
-    })
     checkMatch(document.querySelectorAll(".flipped"));
-    // add event
-    setTimeout(function () {
-      document.querySelectorAll(".card").forEach(card => {
-        card.removeEventListener("click", cantTurnCard);
-        card.addEventListener("click", flipCard);
-      })
-    }, 2000)
   }
 }
 function cantTurnCard() {
@@ -113,6 +101,10 @@ function cantTurnCard() {
   }, 1000);
 }
 function checkMatch(cards) {
+  document.querySelectorAll(".card").forEach(card => {
+    card.removeEventListener("click", flipCard);
+    card.addEventListener("click", cantTurnCard);
+  })
   if (cards[0].lastChild.firstChild.src === cards[1].lastChild.firstChild.src) {
     setTimeout(function () {
       cards.forEach(card => {
@@ -120,6 +112,10 @@ function checkMatch(cards) {
         card.classList.remove("flipped");
       });
       gameOver();
+      document.querySelectorAll(".card").forEach(card => {
+        card.removeEventListener("click", cantTurnCard);
+        card.addEventListener("click", flipCard);
+      })
     }, 1000)
 
   } else {
@@ -127,6 +123,10 @@ function checkMatch(cards) {
       cards.forEach(card => {
         card.classList.remove("flipped");
       });
+      document.querySelectorAll(".card").forEach(card => {
+        card.removeEventListener("click", cantTurnCard);
+        card.addEventListener("click", flipCard);
+      })
     }, 2000)
   }
 }
