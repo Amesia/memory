@@ -2,11 +2,22 @@
 TODO:
 -animatie kaartjes verschijnen op tafel
 -timer/card turned
+bug: daantje zie geen plaatjes
 */
 const gameBoard = document.querySelector(".game-board-container");
 const startBtn = document.querySelector(".start-btn");
+const maxWidth = document.querySelector("body").offsetWidth;
 
-//start game
+// mediaqueries
+const s = window.matchMedia("(max-width: 375px)");
+const xs = window.matchMedia("(max-width: 320px)");
+if (s.matches) {
+  document.querySelector(".forty").setAttribute("disabled", "disabled");
+}
+if (xs.matches) {
+  document.querySelector(".thirtytwo").setAttribute("disabled", "disabled");
+}
+//START GAME
 startBtn.addEventListener("click", function () {
   let size = document.querySelector("#game-size").value;
   let collection = document.querySelector("#game-collection").value;
@@ -14,8 +25,9 @@ startBtn.addEventListener("click", function () {
     gameBoard.innerHTML = '';
   }
   gameBoard.style.maxHeight = gameBoard.offsetHeight + "px";
+  // gameBoard.style.width = body.offsetWidth + "px";
   let randomNums = makeRandomCollectionArray(size);
-  makeGrid(size, gameBoard.offsetHeight);
+  makeGrid(size, gameBoard.offsetHeight, maxWidth);
   //addRandomImages
   addRandomImages(collection, randomNums);
 })
@@ -45,39 +57,41 @@ function shuffleArray(arr) {
   }
   return arr;
 }
-function makeGrid(size, gameBoardHeight) {
-  // make html cards
+function makeGrid(size, maxHeight, maxWidth) {
+  let foundBestFit = false;
+  let testCols = 2;
+  let bestAmountCols, bestCardSize;
+  do {
+    if (size % testCols === 0) {
+      cardSize = Math.floor(maxHeight / (size / testCols));
+      if (cardSize * testCols > maxWidth) {
+        foundBestFit = true;
+        if (testCols === 2) {
+          bestAmountCols = 2;
+          bestCardSize = maxWidth / 2;
+        }
+      } else {
+        bestAmountCols = testCols;
+        bestCardSize = cardSize;
+        testCols++;
+      }
+    } else {
+      testCols++;
+    }
+  } while (!foundBestFit)
+  let cols = bestAmountCols;
+  gameBoard.style.width = bestCardSize * bestAmountCols + "px";
+  gameBoard.style.backgroundColor = "rgba(11, 11, 15, 40%)";
+  gameBoard.style.gridTemplateColumns = "repeat(" + cols + ", 1fr)";
+  makeCards(bestCardSize, size);
+}
+function makeCards(cardSize, size) {
   for (let i = 0; i < size; i++) {
     gameBoard.innerHTML += '<div class="card"><div class="outer"></div><div class="inner hidden"><img></img></div></div>';
   }
-  //size up gameboard
-  //hoogte berekenen
-  let cardSize3Rows = Math.round((gameBoardHeight / 3) - 20); // 3 rijen
-  let cardSize4Rows = Math.round((gameBoardHeight / 4) - 20); //4 rijen
-
-  //breedte berekenen
-  if (size === "6") {
-    gameBoard.style.maxWidth = ((cardSize3Rows + 20) * 2 + 10) + "px"; // berekenen breedte (1 card + margin) * aantal colomen + margin links en rechts
-    resizeCards(cardSize3Rows);
-  } else if (size === "12") {
-    gameBoard.style.maxWidth = ((cardSize3Rows + 20) * 4) + "px";
-    resizeCards(cardSize3Rows);
-  } else if (size === "24") {
-    gameBoard.style.maxWidth = ((cardSize4Rows + 20) * 6) + "px";
-    resizeCards(cardSize4Rows);
-  } else if (size === "32") {
-    gameBoard.style.maxWidth = ((cardSize4Rows + 20) * 8) + "px";
-    resizeCards(cardSize4Rows);
-  } else if (size === "40") {
-    gameBoard.style.maxWidth = ((cardSize4Rows + 20) * 10) + "px";
-    resizeCards(cardSize4Rows);
-  }
-  gameBoard.style.backgroundColor = "rgba(11, 11, 15, 40%)";
-}
-function resizeCards(cardSize) {
   document.querySelectorAll(".card").forEach(card => {
-    card.style.height = cardSize + "px";
-    card.style.width = cardSize + "px";
+    card.style.width = (cardSize) - 8 + "px";
+    card.style.height = (cardSize) - 8 + "px";
     card.addEventListener("click", flipCard);
   })
 }
@@ -114,10 +128,11 @@ function checkMatch(cards) {
       gameOver();
       document.querySelectorAll(".card").forEach(card => {
         card.removeEventListener("click", cantTurnCard);
-        card.addEventListener("click", flipCard);
+        if (!card.classList.contains("matched")) {
+          card.addEventListener("click", flipCard);
+        }
       })
     }, 1000)
-
   } else {
     setTimeout(function () {
       cards.forEach(card => {
