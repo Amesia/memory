@@ -100,6 +100,9 @@ select {
   box-sizing: border-box;
   transition: transform 1s ease-out;
   transform-style: preserve-3d;
+  -webkit-user-select: none;
+  -ms-user-select: none; 
+  user-select: none; 
 }
 .card:hover{
   border: 3px #8c6026 outset;
